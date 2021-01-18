@@ -16,32 +16,22 @@ while (lotteryNumbers.size < 6) {
 }
 console.log("these are the lottery numbers", ...lotteryNumbers)
 
-//console.log(JSON.parse("[4,3,9,2,7,5]"))
 
-
-fs.createReadStream('entries.csv')
+fs.createReadStream('entries.csv') //read from this file
     .pipe(csv())
-    .on('data', (data) => results.push(data))
-    .on('end', () => {
-        // console.log(results);
-        // [
-        // {name: "Laurianne Wuckert", numbers: "[4,3,9,2,7,5]"},
-        // {name: "Mrs. Jeramie Glover", numbers: "[5,1,4,6,2,8]"}
-        // ] array of objects
+    .on('data', (data) => results.push(data)) //for each line of data (line defined with first line)
+    .on('end', () => { //when finished with all lines
         results.forEach(record => {
             let numbers = JSON.parse(record.numbers)
             //filtering records if more than three numbers...
-            // console.log("now on", numbers)
-            let newArray = numbers.filter(number=> [...lotteryNumbers].includes(number))
-            // console.log("new array ",newArray)
-            if(newArray.length>=3){
-                winners.push({name: record.name, numbers: numbers, winning: newArray})
+            let winningNumbers = numbers.filter(number=> [...lotteryNumbers].includes(number))
+            if(winningNumbers.length>=3){ //if there are three or more winning numbers
+                winners.push({name: record.name, numbers: numbers, winning: winningNumbers})
             }
         })
         winners.forEach(winner=>{
-            console.log(`${winner.name} is a winner! They had the numbers ${winner.numbers} and won with  the numbers ${winner.winning}. They win £100!` )
+            console.log(`${winner.name} is a winner! They had the numbers ${winner.numbers} and won with  the numbers ${winner.winning}. ${winner.name} wins £100!` )
         })
-
     });
 
 
